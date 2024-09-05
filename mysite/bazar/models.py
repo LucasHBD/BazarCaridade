@@ -17,7 +17,7 @@ class Item(models.Model):
     nome = models.CharField(max_length=100, blank=False)
     imagem = models.ImageField(upload_to=upload_image_item, blank=True, null=False)
     descricao = models.CharField(max_length=200, null=False)
-    preco = models.DecimalField(max_digits=6, decimal_places=2, null=False)
+    preco = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     evento = models.ForeignKey("Evento", on_delete=models.CASCADE, null = True)
 
     def __str__(self):

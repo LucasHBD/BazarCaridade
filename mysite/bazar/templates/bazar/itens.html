@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" autocomplete="off">
+        {% csrf_token %}
+
+        <h3>Nome do Item</h3>
+        {{form.nome}}
+        
+        <h3>Descrição do Item</h3>
+        {{form.descricao}}
+        
+        <h3>Preço do Item</h3>
+        {{form.preco}}
+
+        <div style="margin-top: 45px; text-align: center;">
+            <input type="submit" class="button" value="Registrar" style="font-size: 12px; padding: 15px 40px;">
+        </div>
+    </form>
+</body>
+</html>

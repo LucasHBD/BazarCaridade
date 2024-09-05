@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404
 from django.template import loader
 
 from .models import *
+from .forms import *
 
 # Create your views here.
 
@@ -22,4 +23,19 @@ def eventos(request):
     return render(request, "bazar/eventos.html", context)
 
 def itens(request):
-    return HttpResponse("Página dos Itens Cadastrados no Evento")
+    submitted = False
+    if request.method == "POST":
+        form = CriarFormItem(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/bazar/eventos')
+    else:
+        form = CriarFormItem
+        if 'submitted' in request.GET:
+            submitted = True
+    context = {
+        'form' : form,
+        'submitted' : submitted
+    }
+    return render(request, "bazar/itens.html", context)
