@@ -4,6 +4,10 @@ from django.contrib import admin
 
 from .models import *
 
-admin.site.register(Evento)
-admin.site.register(Item)
 admin.site.register(Usuario)
+class EventoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nome')
+admin.site.register(Evento, EventoAdmin)
+class ItemAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nome')
+admin.site.register(Item, ItemAdmin)

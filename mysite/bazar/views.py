@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, Http404
 from django.template import loader
 
 from .models import *
@@ -31,7 +31,7 @@ def itens(request):
             form.save()
             return HttpResponseRedirect('/bazar/eventos')
     else:
-        form = CriarFormItem
+        form = CriarFormItem()
         if 'submitted' in request.GET:
             submitted = True
     context = {
@@ -39,3 +39,33 @@ def itens(request):
         'submitted' : submitted
     }
     return render(request, "bazar/itens.html", context)
+
+def cadastrarevento(request):
+    submitted = False
+    if request.method == "POST":
+        form = CriarFormEvento(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/bazar/eventos')
+    else:
+        form = CriarFormEvento()
+        if 'submitted' in request.GET:
+            submitted = True
+    context = {
+        'form' : form,
+        'submitted' : submitted
+    }
+    return render(request, "bazar/cadastrarevento.html", context)
+
+def itemevento(request, evento_id):
+    evento = get_object_or_404(Evento, pk=evento_id)
+
+    itens = Item.objects.filter(evento=evento)
+
+    context = {
+        'evento': evento,
+        'itens': itens
+    }
+    
+    return render(request, "bazar/itemevento.html", context)

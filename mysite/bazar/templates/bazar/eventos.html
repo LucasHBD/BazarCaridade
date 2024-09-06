@@ -6,10 +6,11 @@
     <title>Bazar de Caridade</title>
 </head>
 <body>
+    <a href="{% url 'cadastrarevento' %}">Cadastrar Evento</a>
     {% if evento %}
     <ul>
         {% for evento in evento %}
-            <li>{{ evento.nome }}</li>
+            <a href="{% url 'itemevento' evento_id=evento.id%}"><li>{{ evento.nome }}</li></a>
         {% endfor %}
     </ul>
 {% else %}
