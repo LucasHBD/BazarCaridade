@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404
 from django.template import loader
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 from .models import *
 from .forms import *
@@ -40,6 +42,7 @@ def itens(request):
     }
     return render(request, "bazar/itens.html", context)
 
+@login_required
 def cadastrarevento(request):
     submitted = False
     if request.method == "POST":
@@ -69,3 +72,28 @@ def itemevento(request, evento_id):
     }
     
     return render(request, "bazar/itemevento.html", context)
+
+def cadastro(request):
+    form = CriarFormUsuario()
+    submitted = False
+    if request.method == "POST":
+        form = CriarFormUsuario(request.POST)
+
+        if form.is_valid():
+            form.save()
+            nome = form.cleaned_data['nome']
+            senha = form.cleaned_data['senha']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            return HttpResponseRedirect("/bazar/eventos")
+    else:
+        form = CriarFormularioUsuario()
+        if "submitted" in request.GET:
+            submitted = True
+    context = {"form": form, "submitted": submitted}
+    return render(request, "bazar/cadastro.html", context)
+
+def login(request):
+    return render(request, "bazar/login.html", context)
+def reserva(request):
+    return render(request, "bazar/reserva.html", context)
