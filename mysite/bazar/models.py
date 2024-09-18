@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 # Create your models here.
 
 def upload_image_item(instance, filename):
@@ -15,7 +15,7 @@ class Evento(models.Model):
 
 class Item(models.Model):
     nome = models.CharField(max_length=100, blank=False)
-    imagem = models.ImageField(upload_to=upload_image_item, blank=True, null=False)
+    imagem = models.ImageField(upload_to=upload_image_item, blank=True, null=True)
     descricao = models.CharField(max_length=200, null=False)
     preco = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     evento = models.ForeignKey("Evento", on_delete=models.CASCADE, null = True)
@@ -26,13 +26,13 @@ class Item(models.Model):
 class Usuario(models.Model):
     nome = models.CharField(max_length=100, null=False)
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    email = models.CharField(max_length=100, null=False)
+    email = models.EmailField(max_length=100, null=False)
     senha = models.CharField(max_length=30, null=False)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         
-        if (self.usuario.is_staff == True or self.usuario.is_superuser == True):
+        if self.usuario.is_staff or self.usuario.is_superuser:
             admin_group, created = Group.objects.get_or_create(name='Admin')
             self.usuario.groups.add(admin_group)
         else:

@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.template import loader
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 from .models import *
 from .forms import *
@@ -24,23 +25,21 @@ def eventos(request):
     }
     return render(request, "bazar/eventos.html", context)
 
+@login_required
 def itens(request):
-    submitted = False
     if request.method == "POST":
         form = CriarFormItem(request.POST, request.FILES)
-
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/bazar/eventos')
+            return HttpResponseRedirect(reverse('eventos'))  # Redireciona para a página de eventos
+        else:
+            # Se o formulário não for válido, ele recarrega a página e exibe os erros
+            context = {'form': form}
+            return render(request, "bazar/itens.html", context)
     else:
         form = CriarFormItem()
-        if 'submitted' in request.GET:
-            submitted = True
-    context = {
-        'form' : form,
-        'submitted' : submitted
-    }
-    return render(request, "bazar/itens.html", context)
+        context = {'form': form}
+        return render(request, "bazar/itens.html", context)
 
 @login_required
 def cadastrarevento(request):
@@ -83,17 +82,15 @@ def cadastro(request):
             form.save()
             nome = form.cleaned_data['nome']
             senha = form.cleaned_data['senha']
-            user = authenticate(username=username, password=password)
+            user = authenticate(username=nome, password=senha)
             login(request, user)
             return HttpResponseRedirect("/bazar/eventos")
     else:
-        form = CriarFormularioUsuario()
+        form = CriarFormUsuario()
         if "submitted" in request.GET:
             submitted = True
     context = {"form": form, "submitted": submitted}
     return render(request, "bazar/cadastro.html", context)
 
-def login(request):
-    return render(request, "bazar/login.html", context)
 def reserva(request):
     return render(request, "bazar/reserva.html", context)

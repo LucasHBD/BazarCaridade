@@ -3,26 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cadastro de Item</title>
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .form-group .errorlist {
+            color: red;
+            margin-top: 5px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <form method="POST" autocomplete="off">
+    <h1>Cadastro de Item</h1>
+
+    <form method="POST" enctype="multipart/form-data" autocomplete="off">
         {% csrf_token %}
 
-        <h3>Nome do Item</h3>
-        {{form.nome}}
-        
-        <h3>Descrição do Item</h3>
-        {{form.descricao}}
-        
-        <h3>Preço do Item</h3>
-        {{form.preco}}
-        
-        <h3>Evento Relacionado</h3>
-        {{form.evento}}
+        <!-- Exibir erros globais do formulário -->
+        {% if form.non_field_errors %}
+            <div class="form-group">
+                <ul class="errorlist">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
-        <div style="margin-top: 45px; text-align: center;">
-            <input type="submit" class="button" value="Registrar" style="font-size: 12px; padding: 15px 40px;">
+        <!-- Campo Nome do Item -->
+        <div class="form-group">
+            <label for="id_nome">Nome do Item</label>
+            {{ form.nome }}
+            {{ form.nome.errors }}
+        </div>
+
+        <!-- Campo Descrição do Item -->
+        <div class="form-group">
+            <label for="id_descricao">Descrição do Item</label>
+            {{ form.descricao }}
+            {{ form.descricao.errors }}
+        </div>
+
+        <!-- Campo Preço do Item -->
+        <div class="form-group">
+            <label for="id_preco">Preço do Item</label>
+            {{ form.preco }}
+            {{ form.preco.errors }}
+        </div>
+
+        <!-- Campo Imagem do Item -->
+        <div class="form-group">
+            <label for="id_imagem">Imagem do Item</label>
+            {{ form.imagem }}
+            {{ form.imagem.errors }}
+        </div>
+
+        <!-- Campo Evento Relacionado -->
+        <div class="form-group">
+            <label for="id_evento">Evento Relacionado</label>
+            {{ form.evento }}
+            {{ form.evento.errors }}
+        </div>
+
+        <!-- Botão de Enviar -->
+        <div class="form-group" style="text-align: center;">
+            <input type="submit" class="button" value="Registrar">
         </div>
     </form>
 </body>

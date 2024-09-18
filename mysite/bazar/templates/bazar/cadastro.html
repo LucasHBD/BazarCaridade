@@ -3,79 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Cadastro de Usuário</title>
+    <!-- Inclua o CSS do Bootstrap ou qualquer outro estilo que você esteja usando -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <main>
-        <h1 style="text-align: center; margin-bottom: 45px;">Bem-Vindo!</h1>
-        
-        {% if submitted %}
-            <p style="text-align: center;">Seu cadastro foi realizado com sucesso!</p>
-        {% else %}
-            <form method="POST" autocomplete="off">
-                {% csrf_token %}
-                
-                <div class="form-group mb-2">
-                    <h3 style="text-align: center;">Insira seu nome:</h3>
-                    {{ form.nome|add_class:"form-control" }}
-                    {% if form.nome.errors %}
-                        <div class="text-danger">{{ form.nome.errors }}</div>
-                    {% endif %}
-                </div>
-            
-                <div class="form-group mb-2">
-                    <h3 style="text-align: center; margin-top: 15px;">Insira seu nome de usuário:</h3>
-                    {{ form.username|add_class:"form-control" }}
-                    {% if form.username.errors %}
-                        <div class="text-danger">{{ form.username.errors }}</div>
-                    {% endif %}
-                </div>
+    <div class="container mt-5">
+        <h2>Cadastro de Usuário</h2>
+        <form method="POST" autocomplete="off">
+            {% csrf_token %}
 
-                <div class="form-group mb-2">
-                    <h3 style="text-align: center; margin-top: 15px;">Insira seu email:</h3>
-                    {{ form.email|add_class:"form-control" }}
-                    {% if form.email.errors %}
-                        <div class="text-danger">{{ form.email.errors }}</div>
-                    {% endif %}
-                </div>
+            <div class="form-group">
+                <label for="id_nome">Nome</label>
+                {{ form.nome }}
+            </div>
 
-                <div class="form-group mb-2">
-                    <h3 style="text-align: center; margin-top: 15px;">Insira sua senha:</h3>
-                    {{ form.password1|add_class:"form-control" }}
-                    {% if form.password1.errors %}
-                        <div class="text-danger">{{ form.password1.errors }}</div>
-                    {% endif %}
-                </div>
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+            </div>
 
-                <div class="form-group mb-2">
-                    <h3 style="text-align: center; margin-top: 15px;">Confirme sua senha:</h3>
-                    {{ form.password2|add_class:"form-control" }}
-                    {% if form.password2.errors %}
-                        <div class="text-danger">{{ form.password2.errors }}</div>
-                    {% endif %}
-                </div>
-                
-                <div style="margin-top: 20px; margin-bottom: 10px; text-align: center;">
-                    {{ form.termos }}
-                    <span>Eu li e concordo com os <span style="color: var(--fundo-botao);">Termos de Serviço</span> e <span style="color: #0057FF;">Política de Privacidade</span></span>
-                    <br>
-                    <br>
-                    {{ form.maioridade }}
-                    <span>Eu confirmo que sou maior de 18 anos</span>
-                
-                <div class="botao">
-                    <input type="submit" class="button" value="Cadastrar">
-                </div>
-            </form>
-        {% endif %}
-        
-        <hr>
-        
-        <div style="margin-top: 20px; margin-bottom: 10px;">
-            <span style="font-size: 20px; color: var(--texto-branco);">Já possui conta?</span>
-            <span style="margin-left: 217px;"><a href="{% url 'login' %}" style="text-decoration: none; color: var(--fundo-botao); font-size: 20px;">Faça Login</a></span>
-        </div>
-        
-    </main>
+            <div class="form-group">
+                <label for="id_senha">Senha</label>
+                {{ form.senha }}
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Inclua o JS do Bootstrap ou qualquer outro script que você esteja usando -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

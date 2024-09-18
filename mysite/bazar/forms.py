@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from .models import *
 
 class CriarFormItem(forms.ModelForm):
@@ -13,11 +14,12 @@ class CriarFormItem(forms.ModelForm):
             'evento' : '',
         }
         widgets = {
-                'nome': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nome do Item'}),
-                'descricao': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descrição do Item'}),
-                'preco': forms.NumberInput(attrs={'class':'form-control', 'placeholder':'0,00'}),
-                'evento': forms.SelectCheckboxMultiple(attrs={'class':'form-control'}),
-            }
+            'nome': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nome do Item'}),
+            'descricao': forms.TextInput(attrs={'class':'form-control', 'placeholder':'Descrição do Item'}),
+            'preco': forms.NumberInput(attrs={'class':'form-control', 'placeholder':'0,00'}),
+            'evento': forms.Select(attrs={'class':'form-control'}),
+            'imagem': forms.ClearableFileInput(attrs={'class':'form-control-file'}),
+        }
 
 class CriarFormEvento(forms.ModelForm):
     class Meta:
@@ -33,36 +35,40 @@ class CriarFormEvento(forms.ModelForm):
                 'evento_inicio': forms.DateTimeInput(attrs={'class':'form-control', 'placeholder':'Data de Inicio'}),
                 'evento_fim': forms.DateTimeInput(attrs={'class':'form-control', 'placeholder':'Data de Fim'}),
             }
+        
 class CriarFormUsuario(forms.ModelForm):
     email = forms.EmailField(
-        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "tatuadouro@gmail.com"})
+        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "a@b.com"})
     )
     nome = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "João Tatuador"})
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Seu Nome"})
     )
+    senha = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "form-control", "placeholder": "Senha"})
+    )
+
     class Meta:
         model = Usuario
         fields = ['nome', 'email', 'senha']
         labels = {
-            'nome' : 'Nome',
-            'usuario' : 'Nome de Usuario',
-            'email' : 'Email',
-            'senha' : 'Senha',
-            'senha2' : 'Confirme a Senha',
+            'nome': 'Nome',
+            'email': 'Email',
+            'senha': 'Senha',
         }
-        widgets = {
-                'nome': forms.TextInput(attrs={'class':'form-control', 'placeholder':'John Eater'}),
-                'usuario': forms.TextInput(attrs={'class':'form-control', 'placeholder':'JohnEater2003'}),
-                'email': forms.DateTimeInput(attrs={'class':'form-control', 'placeholder':'a@b.com'}),
-            }
+
     def save(self, commit=True):
-        user = super().save(commit=False)
-        user.email = self.cleaned_data['email']
+        # Cria um objeto User
+        username = self.cleaned_data['nome'].replace(" ", "").lower()  # Crie um nome de usuário baseado no nome
+        user = User.objects.create_user(
+            username=username,
+            email=self.cleaned_data['email'],
+            password=self.cleaned_data['senha']
+        )
+        
         if commit:
-            user.save()
-            Usuario.objects.create(
-                usuario = user,
-                nome=self.cleaned_data['nome_usuario'],
-                email=user.email
-            )
-        return user
+            # Salva o objeto Usuario
+            usuario = super().save(commit=False)
+            usuario.usuario = user  # Associa o User ao campo usuario
+            usuario.save()
+        
+        return usuario
