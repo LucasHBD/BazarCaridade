@@ -9,15 +9,33 @@
     <h1>Evento: {{ evento.nome }}</h1>
     <p>Início: {{ evento.evento_inicio }} - Fim: {{ evento.evento_fim }}</p>
 
+    <form action="{% url 'buscar_item' evento.id %}" method="get" style="margin-left: 55px; text-align: left;">
+        {% csrf_token %}
+        <label for="item"></label><br>
+        <input type="search" id="it" name="item" placeholder="Procurar...">
+
+        <button type="submit">Buscar</button>
+    </form>
+
     {% if itens %}
         <h2>Itens Relacionados</h2>
         <ul>
-            {% for item in itens %}
+            {% for item_info in itens %}
                 <li>
-                    <strong>{{ item.nome }}</strong><br>
-                    <img src="{{ item.imagem.url }}" alt="{{ item.nome }}" style="width: 100px; height: auto;"><br>
-                    Descrição: {{ item.descricao }}<br>
-                    Preço: R$ {{ item.preco }}<br>
+                    <strong>{{ item_info.item.nome }}</strong><br>
+                    <img src="{{ item_info.item.imagem.url }}" alt="{{ item_info.item.nome }}" style="width: 100px; height: auto;"><br>
+                    Descrição: {{ item_info.item.descricao }}<br>
+                    Preço: R$ {{ item_info.item.preco }}<br>
+
+                    <!-- Botão de reserva -->
+                    {% if item_info.reservado %}
+                        <button disabled>Reservado</button>
+                    {% else %}
+                        <form action="{% url 'reserva' item_info.item.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Reservar</button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

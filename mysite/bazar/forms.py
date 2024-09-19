@@ -72,3 +72,22 @@ class CriarFormUsuario(forms.ModelForm):
             usuario.save()
         
         return usuario
+
+class ReservaForm(forms.ModelForm):
+    class Meta:
+        model = Reserva
+        fields = []  # Deixe os campos em branco pois eles serão preenchidos automaticamente na view
+        labels = {}
+
+    def __init__(self, *args, **kwargs):
+        # Extraia o argumento item para não precisar incluir no formulário
+        self.item = kwargs.pop('item', None)
+        super().__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        reserva = super().save(commit=False)
+        reserva.item = self.item
+        reserva.usuario = self.initial.get('usuario', None)  # Aqui você pode definir o usuário, se necessário
+        if commit:
+            reserva.save()
+        return reserva

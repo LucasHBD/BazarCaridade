@@ -48,4 +48,10 @@ class Usuario(models.Model):
     def __str__(self):
         return self.nome
     
-    
+class Reserva(models.Model):
+    item = models.OneToOneField(Item, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    data_reserva = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reserva de {self.item.nome} por {self.usuario.username}"    

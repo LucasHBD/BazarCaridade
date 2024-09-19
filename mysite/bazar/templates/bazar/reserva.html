@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt_br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reservar Item</title>
 </head>
 <body>
+    <h1>Reservar Item: {{ item.nome }}</h1>
     
+    <form method="post" action="{% url 'reserva' item.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Reservar</button>
+    </form>
+
+    <a href="{% url 'eventos' %}">Voltar para eventos</a>
 </body>
 </html>

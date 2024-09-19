@@ -1,10 +1,12 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseRedirect, Http404, HttpResponse
 from django.template import loader
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.views.generic import ListView
+from django.contrib import messages
 
 from .models import *
 from .forms import *
@@ -62,16 +64,23 @@ def cadastrarevento(request):
     return render(request, "bazar/cadastrarevento.html", context)
 
 def itemevento(request, evento_id):
-    evento = get_object_or_404(Evento, pk=evento_id)
-
+    evento = get_object_or_404(Evento, id=evento_id)
     itens = Item.objects.filter(evento=evento)
-
+    
+    # Verifica se cada item foi reservado pelo usuário
+    itens_info = []
+    for item in itens:
+        reservado = Reserva.objects.filter(item=item, usuario=request.user).exists()
+        itens_info.append({
+            'item': item,
+            'reservado': reservado
+        })
+    
     context = {
         'evento': evento,
-        'itens': itens
+        'itens': itens_info
     }
-    
-    return render(request, "bazar/itemevento.html", context)
+    return render(request, 'bazar/itemevento.html', context)
 
 def cadastro(request):
     form = CriarFormUsuario()
@@ -93,5 +102,51 @@ def cadastro(request):
     context = {"form": form, "submitted": submitted}
     return render(request, "bazar/cadastro.html", context)
 
-def reserva(request):
-    return render(request, "bazar/reserva.html", context)
+@login_required
+def reserva(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    form = ReservaForm()
+    submitted = False
+
+    if request.method == "POST":
+        form = ReservaForm(request.POST)
+        if form.is_valid():
+            reserva = form.save(commit=False)
+            reserva.item = item
+            reserva.usuario = request.user  # Adiciona o usuário atual
+            reserva.save()
+            return redirect('itemevento', evento_id=item.evento.id)
+
+    context = {
+        'form': form,
+        'item': item,
+        'submitted': submitted
+    }
+    return render(request, 'bazar/reserva.html', context)
+
+class BuscarItem(ListView):
+    model = Item
+    context_object_name = "itens"
+    template_name = "bazar/itemevento.html"
+
+    def get_queryset(self):
+        evento_id = self.kwargs.get("evento_id")
+        query = self.request.GET.get("item", "")
+
+        evento = get_object_or_404(Evento, id=evento_id)
+        
+        itens = Item.objects.filter(evento=evento)
+
+        if query:
+            itens = itens.filter(nome__icontains=query)
+
+        return itens
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        evento_id = self.kwargs.get("evento_id")
+
+        # Adiciona o evento ao contexto
+        evento = get_object_or_404(Evento, id=evento_id)
+        context["evento"] = evento
+        return context
