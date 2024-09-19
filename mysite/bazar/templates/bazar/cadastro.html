@@ -28,10 +28,14 @@
                 {{ form.senha }}
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="text-align: center;">
                 <button type="submit" class="btn btn-primary">Cadastrar</button>
             </div>
         </form>
+    </div>
+    <div style="text-align: center;">
+        <span style="margin-right: 10%;">Ja possui conta?</span> 
+        <span style="margin-left: 150px;"><a href="{% url 'login' %}" style="text-decoration: none; font-size: 20px;"> Entrar! </a></span>
     </div>
 
     <!-- Inclua o JS do Bootstrap ou qualquer outro script que você esteja usando -->

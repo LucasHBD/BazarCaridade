@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bazar de Caridade</title>
 </head>
+<header>
+    <a style="float: right;" href="{% url 'cadastro' %}">Cadastrar</a><a style="float: right;" href="{% url 'login' %}">Entrar</a>
+</header>
 <body>
     <a href="{% url 'eventos' %}">Ir para os eventos cadastrados.</a>
+    <a href="{% url 'logout' %}">Sair</a>
 </body>
 </html>

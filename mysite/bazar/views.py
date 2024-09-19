@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404
 from django.template import loader
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
@@ -84,7 +85,7 @@ def cadastro(request):
             senha = form.cleaned_data['senha']
             user = authenticate(username=nome, password=senha)
             login(request, user)
-            return HttpResponseRedirect("/bazar/eventos")
+            return HttpResponseRedirect("/bazar/eventos?submitted = True")
     else:
         form = CriarFormUsuario()
         if "submitted" in request.GET:

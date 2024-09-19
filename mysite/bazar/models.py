@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.forms import UserCreationForm
 # Create your models here.
 
 def upload_image_item(instance, filename):
